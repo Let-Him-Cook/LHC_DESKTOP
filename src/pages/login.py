@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from PIL import Image, ImageOps
+from PIL import Image
 from src.components.login_form import LoginForm
 from src.handlers.auth import authenticate
 
@@ -36,12 +36,12 @@ class LoginPage(ctk.CTkFrame):
         frame_height = self.image_frame.winfo_height()
 
         # Resize the image to fit the image_frame
-        resized_image = ImageOps.contain(logo_image, (frame_width, frame_height), Image.Resampling.LANCZOS)
+        resized_image = logo_image.resize((frame_width, frame_height))
         
         # Convert the resized image to CTkImage with the correct size
         logo_photo = ctk.CTkImage(resized_image, size=(frame_width, frame_height))
         
-        self.logo_label = ctk.CTkLabel(self.image_frame, image=logo_photo, text="", bg_color="#cb6d30")
+        self.logo_label = ctk.CTkLabel(self.image_frame, image=logo_photo, text="", anchor="center", bg_color="#cb6d30")
         self.logo_label.pack(fill="both", expand=True, anchor="center")
 
     def handle_login(self, username, password):

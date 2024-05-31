@@ -6,44 +6,49 @@ from src.handlers.auth import authenticate
 class LoginPage(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.create_widgets()
+        self.render()
 
-    def create_widgets(self):
+    def render(self):
         # Configure the grid to have two columns with equal weight
         self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=2)
+        self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
         # Create a frame for the form and image
         self.form_frame = ctk.CTkFrame(self)
-        self.form_frame.grid(row=0, column=0, sticky="nsew")
+        self.form_frame.grid(row=0, column=0, sticky="enws")
         
-        self.image_frame = ctk.CTkFrame(self)
-        self.image_frame.grid(row=0, column=1, sticky="nsew")
+        self.image_frame = ctk.CTkFrame(self, fg_color="#cb6d30")
+        self.image_frame.grid(row=0, column=1, sticky="wnes")
         
         # Add the login form
         self.login_form = LoginForm(self.form_frame, self.handle_login)
         self.login_form.pack(expand=True)
-
-        # Load the image with a delay to ensure the frame size is accurate
-        self.after(100, self.load_image)
         
-    def load_image(self):
-        logo_image = Image.open("assets/images/login_right_banner.png")
+        logo_image_instance = Image.open("assets/images/logo.png")
+        self.logo_image_picture = ctk.CTkImage(logo_image_instance, size=(500, 500))
         
-        # Get the frame dimensions
-        frame_width = self.image_frame.winfo_width()
-        frame_height = self.image_frame.winfo_height()
-
-        # Resize the image to fit the image_frame
-        resized_image = logo_image.resize((frame_width, frame_height))
+        self.logo_image_picture = ctk.CTkLabel(
+            self.image_frame, 
+            image=self.logo_image_picture, 
+            text="", 
+            anchor="center",
+        )
         
-        # Convert the resized image to CTkImage with the correct size
-        logo_photo = ctk.CTkImage(resized_image, size=(frame_width, frame_height))
+        self.logo_image_picture.pack(fill="both", expand=True)
         
-        self.logo_label = ctk.CTkLabel(self.image_frame, image=logo_photo, text="", anchor="center", bg_color="#cb6d30")
-        self.logo_label.pack(fill="both", expand=True, anchor="center")
-
+        self.copyright_label = ctk.CTkLabel(
+            self.image_frame,
+            text="© copyright Let Him Cook 2024", 
+            font=ctk.CTkFont(size=20,weight="normal"),
+            text_color="#FFFFFF",
+        )
+        
+        self.copyright_label.pack(
+            fill="x", expand=False, anchor="center",
+            pady=32
+        )
+        
     def handle_login(self, username, password):
         if authenticate(username, password):
             from src.pages.dashboard import DashboardPage

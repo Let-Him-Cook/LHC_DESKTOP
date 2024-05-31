@@ -46,9 +46,7 @@ class LoginPage(ctk.CTkFrame):
 
     def handle_login(self, username, password):
         if authenticate(username, password):
+            from src.pages.dashboard import DashboardPage
             self.master.show_page(DashboardPage)
         else:
             print("Login failed")
-
-# Import DashboardPage at the end to avoid circular import
-from src.pages.dashboard import DashboardPage

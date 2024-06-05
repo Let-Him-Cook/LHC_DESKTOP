@@ -11,23 +11,7 @@ class Header(ctk.CTkFrame):
   def render(self):
     self.mainframe = ctk.CTkFrame(self)
     self.mainframe.pack(pady=32, fill="x", expand=True)
-    
-    # ------------- Menu Button  -----------------
-    
-    hamburger_icon = Image.open("assets/images/hamburger.png")
-    hamburger_menu_button = ctk.CTkImage(hamburger_icon, size=(48, 48))
-  
-    self.menu_button = ctk.CTkButton(
-      self.mainframe,
-      text="", 
-      image=hamburger_menu_button,
-      fg_color="transparent",
-      hover_color="#C9D3DB",
-      width=54,
-    )
-    
-    self.menu_button.pack(side="left", fill="both", anchor="w")
-    
+        
     # ------------- Center Container  -----------------
     
     self.centerframe = ctk.CTkFrame(self.mainframe)
@@ -36,7 +20,6 @@ class Header(ctk.CTkFrame):
       anchor="center", 
       fill="both", 
       expand=True,
-      padx=44
     )
     
     self.welcome_message_frame = ctk.CTkFrame(self.centerframe)

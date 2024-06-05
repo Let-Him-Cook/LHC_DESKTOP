@@ -50,8 +50,8 @@ class LoginPage(ctk.CTkFrame):
 		)
 			
 	def handle_login(self, username, password):
-		if authenticate(username, password):
+		isAuthenticated = authenticate(username, password)
+		if isAuthenticated:
 			from src.pages.dashboard import DashboardPage
 			self.master.show_page(DashboardPage)
-		else:
-			print("Login failed")
+		return isAuthenticated

@@ -1,5 +1,6 @@
 from PIL import Image
 import customtkinter as ctk
+from src.utils.greeting import greeting
 
 class Header(ctk.CTkFrame):
   def __init__(self, master, logout):
@@ -43,7 +44,7 @@ class Header(ctk.CTkFrame):
     
     ctk.CTkLabel(
       self.welcome_message_frame, 
-      text="Boa Tarde, ",
+      text=greeting()  + ", ",
       font=ctk.CTkFont(weight="bold", size=24)
     ).pack(side="left", anchor="w")
 

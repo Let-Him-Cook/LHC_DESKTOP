@@ -1,16 +1,33 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from tkinter import messagebox
+import requests
 import numpy as np
 from src.utils.options import MONTHS, YEARS
+from src.utils.api import API_BASE_URL
 
 class BiggestSalesPie(ctk.CTkFrame):
   def __init__(self, master):
     super().__init__(master)
     self.render()
     
-  def fetchData(year, month):
-    print(year, month)
+  def fetchData(self, year, month):
+    url = f"{API_BASE_URL}/statistics/biggestsales?year={year}&month={month}"
+        
+    try:
+        response = requests.get(url)
+     
+        if int(response.status_code) == 200:
+            data = response.json()
+            return data
+        else:
+            messagebox.showerror("Maiores vendas", "Um erro ocorreu para recuperar as informações")
+            return []
+    except requests.RequestException as e:
+        messagebox.showerror("Maiores vendas", "Impossível obter as informaçõe no momento, tente mais tarde.")
+        print(f"Request failed: {e}")
+        return []
     
   def render(self):
     self.mainframe = ctk.CTkFrame(self)
@@ -114,22 +131,22 @@ class BiggestSalesPie(ctk.CTkFrame):
     
     fig, ax = plt.subplots(figsize=(4, 4), subplot_kw=dict(aspect="equal"))
 
-    recipe = ["375 Hamburguer",
-              "75 Feijoada",
-              "250 Pizza",
-              "300 Guaraná_300ml"]
+    data = self.fetchData(year=2024, month=6)
 
-    data = [float(x.split()[0]) for x in recipe]
-    dishes = [x.split()[-1] for x in recipe]
+    # Obter uma lista de valores de quantity
+    quantities = [item["quantity"] for item in data]
+
+    # Obter uma lista de valores de name
+    names = [item["name"] for item in data]
 
     def func(pct, allvals):
       absolute = int(np.round(pct/100.*np.sum(allvals)))
       return f"{pct:.1f}%\n({absolute:d})"
       
     wedges, texts, autotexts = ax.pie(
-      data, 
-      autopct=lambda pct: func(pct, data),
-      labels=dishes,
+      quantities, 
+      autopct=lambda pct: func(pct, quantities),
+      labels=names,
     )
 
     plt.setp(autotexts, size=10, weight="normal", color="white")

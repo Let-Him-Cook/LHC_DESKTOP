@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 
 class LoginForm(ctk.CTkFrame):
 	def __init__(self, master, on_login):
@@ -99,4 +100,3 @@ class LoginForm(ctk.CTkFrame):
 		isAuthenticated = self.on_login(username, password)
 		if not isAuthenticated:
 			self.error_warning_label_var.set("E-mail ou senha inválida")
-

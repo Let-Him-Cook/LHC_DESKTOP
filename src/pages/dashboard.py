@@ -4,6 +4,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.components.header import Header
 from src.components.charts.biggest_sales_pie import BiggestSalesPie
 from src.components.charts.generated_income_line import GeneratedIncomeLine
+from src.components.charts.annual_sales_comparison import AnnualSalesComparison
+
 
 class DashboardPage(ctk.CTkFrame):
   def __init__(self, master):
@@ -60,6 +62,9 @@ class DashboardPage(ctk.CTkFrame):
     
     self.generatedIncomeLineChart = GeneratedIncomeLine(top_chart_grid_frame)
     self.generatedIncomeLineChart.grid(row=0, column=1, sticky="wnes")
+    
+    self.annualSalesComparison = AnnualSalesComparison(self.mainframe)
+    self.annualSalesComparison.pack(fill="both", expand=True, pady=32)
     
     # Second Section
     

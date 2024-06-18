@@ -4,5 +4,6 @@
 
 customtkinter # Custom UI Elements
 matplotlib # Charts
+seaborn # Charts
 numpy # Matplotlib requires it
 pillow # Handle Images

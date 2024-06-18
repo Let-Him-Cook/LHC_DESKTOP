@@ -66,7 +66,7 @@ class GeneratedIncomeLine(ctk.CTkFrame):
       )
     )
     
-    self.year.pack(side="left", anchor="w", padx=16, pady=32)
+    self.year.pack(side="left", anchor="w", padx=16, pady=36)
     
     # ---------------- chart -----------------
     
@@ -79,6 +79,9 @@ class GeneratedIncomeLine(ctk.CTkFrame):
     self.chartframe.pack(fill="both",expand=True, anchor="n")
     
     fig, ax = plt.subplots()
+    
+    # Adicionar a grade horizontal
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5, axis='y')
 
     counts = [13000, 27000, 50300, 22600, 13400, 18548, 12374, 57443, 33222, 44192, 27321, 17000]
     months = ['Jan', 'Fev', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Set', 'Out', 'Nov', 'Dez']

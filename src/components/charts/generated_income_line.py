@@ -1,15 +1,32 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
+from tkinter import messagebox
+import requests
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from src.utils.options import YEARS
+from src.utils.api import API_BASE_URL
   
 class GeneratedIncomeLine(ctk.CTkFrame):
   def __init__(self, master):
     super().__init__(master)
     self.render()
     
-  def fetchData(year, month):
-    print(year, month)
+  def fetchData(self, year):
+      url = f"{API_BASE_URL}/statistics/income?year={year}"
+          
+      try:
+          response = requests.get(url)
+       
+          if int(response.status_code) == 200:
+              data = response.json()
+              return data
+          else:
+              messagebox.showerror("Receita", "Um erro ocorreu para recuperar as informações")
+              return []
+      except requests.RequestException as e:
+          messagebox.showerror("Receita", "Impossível obter as informaçõe no momento, tente mais tarde.")
+          print(f"Request failed: {e}")
+          return []
     
   def render(self):
     self.mainframe = ctk.CTkFrame(self)
@@ -29,7 +46,7 @@ class GeneratedIncomeLine(ctk.CTkFrame):
     
     self.title = ctk.CTkLabel(
       self.actionsframe, 
-      text="Renda Gerada",
+      text="Receita",
       font=ctk.CTkFont(weight='bold', size=24),
       text_color="#141D24"
     )
@@ -38,7 +55,7 @@ class GeneratedIncomeLine(ctk.CTkFrame):
     # YEAR 
     
     def year_options_callback(choice):
-      print("Ano selecionado:", choice)
+      self.update_chart(choice)
     
     self.year = ctk.CTkOptionMenu(
       self.actionsframe, 
@@ -71,26 +88,47 @@ class GeneratedIncomeLine(ctk.CTkFrame):
     # ---------------- chart -----------------
     
     self.chartframe = ctk.CTkFrame(
-      self.mainframe,
-      fg_color="#FFFFFF",
-      corner_radius=24,
+        self.mainframe,
+        fg_color="#FFFFFF",
+        corner_radius=24,
     )
     
-    self.chartframe.pack(fill="both",expand=True, anchor="n")
+    self.chartframe.pack(fill="both", expand=True, anchor="n")
     
-    fig, ax = plt.subplots()
+    self.fig, self.ax = plt.subplots()
     
     # Adicionar a grade horizontal
-    ax.grid(True, which='both', linestyle='--', linewidth=0.5, axis='y')
+    self.ax.grid(True, which='both', linestyle='--', linewidth=0.5, axis='y')
 
-    counts = [13000, 27000, 50300, 22600, 13400, 18548, 12374, 57443, 33222, 44192, 27321, 17000]
-    months = ['Jan', 'Fev', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Set', 'Out', 'Nov', 'Dez']
-    bar_colors = ['tab:green']
+    self.canvas = FigureCanvasTkAgg(self.fig, master=self.chartframe)
+    self.canvas.get_tk_widget().pack(fill=ctk.BOTH, expand=True, padx=8, pady=8, anchor="n")
 
-    ax.bar(months, counts, color=bar_colors)
-
-    ax.set_ylabel('Renda (R$)')
+    # Inicializar com o primeiro ano da lista
+    self.update_chart(YEARS[0])
     
-    canvas = FigureCanvasTkAgg(fig, master=self.chartframe)
-    canvas.get_tk_widget().pack(fill=ctk.BOTH, expand=True, padx=8, pady=8, anchor="n")
-    canvas.draw()
+  def update_chart(self, year):
+    data = self.fetchData(year)
+    
+    # Limpar o gráfico existente
+    self.ax.clear()
+
+    # Adicionar a grade horizontal novamente
+    self.ax.grid(True, which='both', linestyle='--', linewidth=0.5, axis='y')
+
+    if data:
+      counts = [item["income"] for item in data]
+      months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+      bar_colors = ['tab:green']
+
+      bars = self.ax.bar(months, counts, color=bar_colors)
+
+      # Adicionar labels em cima de cada barra
+      for bar, count in zip(bars, counts):
+        height = bar.get_height()
+        self.ax.text(bar.get_x() + bar.get_width() / 2.0, height, f'{count}', ha='center', va='bottom')
+
+      self.ax.set_ylabel('Renda (R$)')
+      self.ax.set_xlabel('Meses')
+      self.ax.set_title(f'Receita para o Ano {year}')
+      
+    self.canvas.draw()

@@ -6,6 +6,8 @@ YEARS = [
   "2024"
 ]
 
+YEARS.reverse()
+
 MONTHS = [
   "Janeiro", 
   "Fevereiro", 

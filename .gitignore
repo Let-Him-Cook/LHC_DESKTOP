@@ -1,5 +1,7 @@
 # .gitignore
-
+build/
+dist/
+main.spec
 # Ignore the virtual environment directory
 venv/
 

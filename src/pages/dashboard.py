@@ -5,7 +5,7 @@ from src.components.header import Header
 from src.components.charts.biggest_sales_pie import BiggestSalesPie
 from src.components.charts.generated_income_line import GeneratedIncomeLine
 from src.components.charts.annual_sales_comparison import AnnualSalesComparison
-
+from src.context.user import loggedin_user
 
 class DashboardPage(ctk.CTkFrame):
   def __init__(self, master):
@@ -71,7 +71,16 @@ class DashboardPage(ctk.CTkFrame):
     # Third Section
     
   def logout(self):
-    # Logic for logging out
+    global loggedin_user
+    
+    loggedin_user["id"] = None
+    loggedin_user["name"] = None
+    loggedin_user["login"] = None
+    loggedin_user["password"] = None
+    loggedin_user["role"] = None
+    loggedin_user["createdAt"] = None
+    loggedin_user["updatedAt"] = None
+    
     from src.pages.login import LoginPage
     self.master.show_page(LoginPage)
 

@@ -1,6 +1,7 @@
 from PIL import Image
 import customtkinter as ctk
 from src.utils.greeting import greeting
+from src.context.user import loggedin_user
 
 class Header(ctk.CTkFrame):
   def __init__(self, master, logout):
@@ -33,7 +34,7 @@ class Header(ctk.CTkFrame):
 
     self.username = ctk.CTkLabel(
       self.welcome_message_frame, 
-      text="Victor",
+      text=loggedin_user.get("name"),
       text_color="#CA6E33",
       font=ctk.CTkFont(weight="bold", size=24)
     )

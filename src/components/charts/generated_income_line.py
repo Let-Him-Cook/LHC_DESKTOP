@@ -1,5 +1,7 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
+import tkinter.filedialog as filedialog
+from PIL import Image
 from tkinter import messagebox
 import requests
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -85,12 +87,30 @@ class GeneratedIncomeLine(ctk.CTkFrame):
     
     self.year.pack(side="left", anchor="w", padx=16, pady=36)
     
+    # Export Button
+        
+    download_icon = Image.open("assets/images/download.png")
+    self.download_icon_image = ctk.CTkImage(download_icon, size=(44, 44))
+
+    self.export_button = ctk.CTkButton(
+      self.actionsframe, 
+      text="",
+      image=self.download_icon_image,
+      command=self.export_chart,
+      width=72,
+      height=72,
+      hover_color="#f0f2f5",
+      fg_color="#f0f2f5"
+    )
+    
+    self.export_button.pack(side="left", anchor="w")
+    
     # ---------------- chart -----------------
     
     self.chartframe = ctk.CTkFrame(
-        self.mainframe,
-        fg_color="#FFFFFF",
-        corner_radius=24,
+      self.mainframe,
+      fg_color="#FFFFFF",
+      corner_radius=24,
     )
     
     self.chartframe.pack(fill="both", expand=True, anchor="n")
@@ -132,3 +152,19 @@ class GeneratedIncomeLine(ctk.CTkFrame):
       self.ax.set_title(f'Receita para o Ano {year}')
       
     self.canvas.draw()
+    
+  def export_chart(self):
+    filetypes = [('PNG', '*.png'), ('PDF', '*.pdf')]
+    
+    file_path = filedialog.asksaveasfilename(
+      title="Gráfico de renda gerada",
+      initialfile="renda_gerada",
+      defaultextension=".png", 
+      filetypes=filetypes
+    )
+    
+    if file_path:
+      self.fig.savefig(file_path)
+      messagebox.showinfo("Exportar", "Gráfico salvo com sucesso!")
+    else:
+      messagebox.showerror("Exportar", "Erro ao salvar o gráfico!")

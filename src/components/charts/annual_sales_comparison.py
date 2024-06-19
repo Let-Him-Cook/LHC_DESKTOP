@@ -1,5 +1,7 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
+import tkinter.filedialog as filedialog
+from PIL import Image
 import requests
 import seaborn as sns
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -187,6 +189,24 @@ class AnnualSalesComparison(ctk.CTkFrame):
     
     self.secondYear.pack(side="left", anchor="w")
     
+    # Export Button
+        
+    download_icon = Image.open("assets/images/download.png")
+    self.download_icon_image = ctk.CTkImage(download_icon, size=(44, 44))
+
+    self.export_button = ctk.CTkButton(
+      self.actionsframe, 
+      text="",
+      image=self.download_icon_image,
+      command=self.export_chart,
+      width=72,
+      height=72,
+      hover_color="#f0f2f5",
+      fg_color="#f0f2f5"
+    )
+    
+    self.export_button.pack(side="left", anchor="w")
+    
     # ---------------- chart -----------------
     
     self.chartframe = ctk.CTkFrame(
@@ -226,3 +246,19 @@ class AnnualSalesComparison(ctk.CTkFrame):
 
     # Atualize o canvas
     self.canvas.draw()
+    
+  def export_chart(self):
+    filetypes = [('PNG', '*.png'), ('PDF', '*.pdf')]
+    
+    file_path = filedialog.asksaveasfilename(
+      title="Gráfico de Comparação de vendas anuais",
+      initialfile="comparacao_de_vendas_anuais",
+      defaultextension=".png", 
+      filetypes=filetypes
+    )
+    
+    if file_path:
+      self.fig.savefig(file_path)
+      messagebox.showinfo("Exportar", "Gráfico salvo com sucesso!")
+    else:
+      messagebox.showerror("Exportar", "Erro ao salvar o gráfico!")

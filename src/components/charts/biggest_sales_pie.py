@@ -1,5 +1,7 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
+import tkinter.filedialog as filedialog
+from PIL import Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox
 import requests
@@ -119,7 +121,25 @@ class BiggestSalesPie(ctk.CTkFrame):
             variable=self.month_var
         )
         
-        self.month.pack(side="left", anchor="w")
+        self.month.pack(side="left", anchor="w", padx=16)
+        
+        # Export Button
+        
+        download_icon = Image.open("assets/images/download.png")
+        self.download_icon_image = ctk.CTkImage(download_icon, size=(44, 44))
+    
+        self.export_button = ctk.CTkButton(
+            self.actionsframe, 
+            text="",
+            image=self.download_icon_image,
+            command=self.export_chart,
+            width=72,
+            height=72,
+            hover_color="#f0f2f5",
+            fg_color="#f0f2f5"
+        )
+        
+        self.export_button.pack(side="left", anchor="w")
         
         # ---------------- chart -----------------
         
@@ -131,7 +151,7 @@ class BiggestSalesPie(ctk.CTkFrame):
         
         self.chartframe.pack(fill="both",expand=True, anchor="n")
         
-        self.fig, self.ax = plt.subplots(figsize=(4, 4), subplot_kw=dict(aspect="equal"))
+        self.fig, self.ax = plt.subplots(figsize=(4, 4.4), subplot_kw=dict(aspect="equal"))
         
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.chartframe)
         self.canvas.get_tk_widget().pack(fill=ctk.BOTH, expand=True, padx=8, pady=8, anchor="n")
@@ -165,3 +185,19 @@ class BiggestSalesPie(ctk.CTkFrame):
             plt.setp(autotexts, size=10, weight="normal", color="white")
 
         self.canvas.draw()
+
+    def export_chart(self):
+        filetypes = [('PNG', '*.png'), ('PDF', '*.pdf')]
+        
+        file_path = filedialog.asksaveasfilename(
+            title="Gráfico de Maiores Vendas",
+            initialfile="maiores_vendas",
+            defaultextension=".png", 
+            filetypes=filetypes
+        )
+        
+        if file_path:
+            self.fig.savefig(file_path)
+            messagebox.showinfo("Exportar", "Gráfico salvo com sucesso!")
+        else:
+            messagebox.showerror("Exportar", "Erro ao salvar o gráfico!")
